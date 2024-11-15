@@ -15,6 +15,17 @@ import time
 from bpy.types import Operator, Panel, PropertyGroup
 from bpy.props import FloatProperty, PointerProperty, BoolProperty
 
+
+if "inputs" in locals():
+    import importlib
+
+    wheels = importlib.reload(wheels)
+    wheels.load_wheels()
+else:
+    from . import wheels
+
+    wheels.load_wheels()
+
 # 动态检测函数
 def check_gamepad_available():
     try:
