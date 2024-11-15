@@ -2,23 +2,15 @@ import os
 import pathlib
 import subprocess
 import zipfile
-import sys
-import platform
 import build_wheel
 
-platform_name_alias = {
-    "Windows": "win",
-    "Linux": "linux",
-    "Darwin": "macOS"
-}
-blender_matrix = {"310": "blender3.3-4.0", "311": "blender4.1"}
 
 project_path = pathlib.Path(__file__).parent.parent.absolute()
 
 
-def do_pack(wheel_dir: pathlib.Path, dist_path: pathlib.Path, blender_version: str, platform_key: str):
+def do_pack(wheel_dir: pathlib.Path, dist_path: pathlib.Path):
     branch = "main"
-    packing_file = f"BGC-{blender_version}-{platform_key}.zip"
+    packing_file = f"BGC.zip"
     print(f"Packing for {packing_file}")
     packing_file = str(dist_path.joinpath(packing_file))
     subprocess.run(
@@ -55,13 +47,8 @@ def main():
         print(f"Creating dist_folder at {dist_path}")
         os.mkdir(dist_path)
 
-    assert platform.system() in platform_name_alias
-    platform_key = f"{platform_name_alias[platform.system()]}_{platform.machine()}"
-    python_code = f"{sys.version_info.major}{sys.version_info.minor}"
-    assert python_code in blender_matrix
-
     build_wheel.download_all(str(wheel_dir))
-    output_file = do_pack(wheel_dir, dist_path, blender_matrix[python_code], platform_key)
+    output_file = do_pack(wheel_dir, dist_path)
     print(f"Output file localed at {output_file}")
 
 
